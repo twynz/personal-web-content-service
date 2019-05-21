@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.myweb.content.dao.mapper.ArticleMapper">
+    <resultMap id="BaseResultMap" type="com.myweb.content.entity.Article">
+        <result column="article_id" jdbcType="VARCHAR" property="articleId"/>
+        <result column="article_type" jdbcType="VARCHAR" property="articleType"/>
+        <result column="article_name" jdbcType="VARCHAR" property="articleName"/>
+        <result column="article_author" jdbcType="VARCHAR" property="articleAuthor"/>
+        <result column="category" jdbcType="VARCHAR" property="category"/>
+        <result column="create_time" jdbcType="TIMESTAMP" property="createTime"/>
+    </resultMap>
+    <resultMap extends="BaseResultMap" id="ResultMapWithBLOBs" type="com.myweb.content.entity.Article">
+        <result column="body" jdbcType="LONGVARCHAR" property="body"/>
+    </resultMap>
+    <sql id="Blob_Column_List">
+       body
+    </sql>
+    <insert id="insert" keyColumn="article_id" keyProperty="articleId" parameterType="com.myweb.content.entity.Article"
+            useGeneratedKeys="true">
+    insert into article (article_id, article_type, article_name, article_author,
+      create_time,category, body)
+    values (#{articleId,jdbcType=VARCHAR},#{articleType,jdbcType=VARCHAR}, #{articleName,jdbcType=VARCHAR}, #{articleAuthor,jdbcType=VARCHAR},
+      #{createTime,jdbcType=TIMESTAMP}, #{category,jdbcType=VARCHAR}, #{body,jdbcType=LONGVARCHAR})
+  </insert>
+    <!--<insert id="insertSelective" keyColumn="article_id" keyProperty="articleId"-->
+            <!--parameterType="com.myweb.content.entity.Article" useGeneratedKeys="true">-->
+        <!--insert into article-->
+        <!--<trim prefix="(" suffix=")" suffixOverrides=",">-->
+            <!--<if test="articleType != null">-->
+                <!--article_type,-->
+            <!--</if>-->
+            <!--<if test="articleName != null">-->
+                <!--article_name,-->
+            <!--</if>-->
+            <!--<if test="articleAuthor != null">-->
+                <!--article_author,-->
+            <!--</if>-->
+            <!--<if test="createTime != null">-->
+                <!--create_time,-->
+            <!--</if>-->
+            <!--<if test="body != null">-->
+                <!--body,-->
+            <!--</if>-->
+        <!--</trim>-->
+        <!--<trim prefix="values (" suffix=")" suffixOverrides=",">-->
+            <!--<if test="articleType != null">-->
+                <!--#{articleType,jdbcType=VARCHAR},-->
+            <!--</if>-->
+            <!--<if test="articleName != null">-->
+                <!--#{articleName,jdbcType=VARCHAR},-->
+            <!--</if>-->
+            <!--<if test="articleAuthor != null">-->
+                <!--#{articleAuthor,jdbcType=VARCHAR},-->
+            <!--</if>-->
+            <!--<if test="createTime != null">-->
+                <!--#{createTime,jdbcType=TIMESTAMP},-->
+            <!--</if>-->
+            <!--<if test="body != null">-->
+                <!--#{body,jdbcType=LONGVARCHAR},-->
+            <!--</if>-->
+        <!--</trim>-->
+    <!--</insert>-->
+    <select id="getArticleContentListByCategory" parameterType="java.lang.String" resultMap="BaseResultMap">
+        select
+        *
+        from article
+        where category = #{category,jdbcType=VARCHAR} and article_type = 'CONTENT'
+    </select>
+    <select id="getArticleSummaryListByCategory" parameterType="java.lang.String" resultMap="BaseResultMap">
+        select
+        *
+        from article
+        where category = #{category,jdbcType=VARCHAR} and article_type = 'SUMMARY'
+    </select>
+    <select id="getArticleSummaryByArticleName" parameterType="java.lang.String" resultMap="BaseResultMap">
+        select
+        *
+        from article
+        where article_name = #{articleName,jdbcType=VARCHAR} and article_type = 'SUMMARY'
+    </select>
+    <select id="getArticleContentByArticleName" parameterType="java.lang.String" resultMap="BaseResultMap">
+        select
+        *
+        from article
+        where article_name = #{articleName,jdbcType=VARCHAR} and article_type = 'CONTENT'
+    </select>
+    <select id="getArticleSummaryByArticleId" parameterType="java.lang.String" resultMap="BaseResultMap">
+        select
+        *
+        from article
+        where article_id = #{articleId,jdbcType=VARCHAR} and article_type = 'SUMMARY'
+    </select>
+    <select id="getArticleContentByArticleId" parameterType="java.lang.String" resultMap="BaseResultMap">
+        select
+        *
+        from article
+        where article_id = #{articleId,jdbcType=VARCHAR} and article_type = 'CONTENT'
+    </select>
+</mapper>
