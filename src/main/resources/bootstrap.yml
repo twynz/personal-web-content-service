@@ -29,8 +29,8 @@ spring:
         enabled: true
         register: true
         service-name: ${service.name}
-        health-check-interval: 1000s
-        health-check-timeout: 2000s
+        health-check-interval: 10s
+        health-check-timeout: 20s
         health-check-path: ${management.context-path}/health
         instance-id: ${service.name}:${HOST_ADDRESS:localhost}:${HOST_PORT:${server.port}}
         ip-address: ${HOST_ADDRESS:localhost}
