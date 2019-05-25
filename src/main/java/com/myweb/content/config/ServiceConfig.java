@@ -1,7 +1,6 @@
 package com.myweb.content.config;
 
 import com.myweb.content.config.oauth2.TokenCheckService;
-import com.myweb.content.properties.FlywayProperties;
 import com.myweb.content.properties.TokenCheckServiceProperties;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.context.properties.ConfigurationProperties;

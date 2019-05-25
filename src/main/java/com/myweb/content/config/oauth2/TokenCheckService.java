@@ -6,6 +6,7 @@ import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.MediaType;
+import org.springframework.http.client.HttpComponentsClientHttpRequestFactory;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.crypto.codec.Base64;
 import org.springframework.security.oauth2.common.OAuth2AccessToken;
@@ -13,16 +14,18 @@ import org.springframework.security.oauth2.common.exceptions.InvalidTokenExcepti
 import org.springframework.security.oauth2.provider.OAuth2Authentication;
 import org.springframework.security.oauth2.provider.token.AccessTokenConverter;
 import org.springframework.security.oauth2.provider.token.DefaultAccessTokenConverter;
-import org.springframework.security.oauth2.provider.token.ResourceServerTokenServices;
-import org.springframework.util.Assert;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestOperations;
+import org.springframework.web.client.RestTemplate;
 
 import java.io.UnsupportedEncodingException;
 import java.util.Map;
 
-public class TokenCheckService implements ResourceServerTokenServices {
+public class TokenCheckService {
+//http://localhost:8500/v1/health/checks/auth
+
+
 
     private final static String AUTH_SERVICE = "auth";
 
@@ -40,6 +43,12 @@ public class TokenCheckService implements ResourceServerTokenServices {
 
     private AccessTokenConverter tokenConverter = new DefaultAccessTokenConverter();
 
+    public TokenCheckService() {
+        HttpComponentsClientHttpRequestFactory requestFactory = new HttpComponentsClientHttpRequestFactory();
+        requestFactory.setReadTimeout(10000);
+        requestFactory.setConnectTimeout(10000);
+        restTemplate = new RestTemplate(requestFactory);
+    }
 
     public void setRestTemplate(RestOperations restTemplate) {
         this.restTemplate = restTemplate;
@@ -65,7 +74,6 @@ public class TokenCheckService implements ResourceServerTokenServices {
         this.tokenName = tokenName;
     }
 
-    @Override
     public OAuth2Authentication loadAuthentication(String accessToken) throws AuthenticationException, InvalidTokenException {
 
         MultiValueMap<String, String> formData = new LinkedMultiValueMap<String, String>();
@@ -89,7 +97,6 @@ public class TokenCheckService implements ResourceServerTokenServices {
         this.loadBalancerClient = loadBalancerClient;
     }
 
-    @Override
     public OAuth2AccessToken readAccessToken(String accessToken) {
         throw new UnsupportedOperationException("Not supported: read access token");
     }

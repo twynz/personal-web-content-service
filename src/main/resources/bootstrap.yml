@@ -1,0 +1,58 @@
+server:
+  port: 10002
+
+service:
+  name: content
+
+management:
+  security:
+    enabled: false
+  health:
+    db:
+      enabled: false
+    diskspace:
+      enabled: false
+  info:
+    git:
+      mode: full
+  context-path: /${service.name}
+
+spring:
+  application:
+    name: ${service.name}
+  cloud:
+    config:
+      enabled: false
+    consul:
+      discovery:
+        preferIpAddress: true
+        enabled: true
+        register: true
+        service-name: ${service.name}
+        health-check-interval: 1000s
+        health-check-timeout: 2000s
+        health-check-path: ${management.context-path}/health
+        instance-id: ${service.name}:${HOST_ADDRESS:localhost}:${HOST_PORT:${server.port}}
+        ip-address: ${HOST_ADDRESS:localhost}
+        port: ${HOST_PORT:${server.port}}
+        lifecycle:
+          enabled: true
+        scheme: http
+        prefer-agent-address: false
+        register-health-check: true
+        tags: ${service.name}, ${spring.profiles.active:default}
+        query-passing: true
+        default-query-tag: ${spring.profiles.active:default}
+      retry:
+        initial-interval: 1000
+        max-attempts: 4
+        max-interval: 1000
+      host: ${CONSUL_ADDRESS:localhost}
+      port: ${CONSUL_PORT:8500}
+  rabbitmq:
+    host: ${RABBIT_ADDRESS:localhost}
+    port: ${RABBIT_PORT:5672}
+    publisher-confirms: true
+    virtual-host: ${RABBIT_VHOST:/}
+    username: ${RABBIT_USER:guest}
+    password: ${RABBIT_PWD:guest}

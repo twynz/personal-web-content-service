@@ -1,0 +1,42 @@
+spring:
+  datasource:
+    name: test
+    username: ${USER_DB_PWD:root}
+    password: ${USER_DB_USER:123}
+    url: jdbc:mysql://${USER_DB_ADDRESS:localhost:3306}/content?useUnicode=true&characterEncoding=utf-8&serverTimezone=Pacific/Auckland
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    hikari:
+      maximum-pool-size: 50
+      connection-timeout: 30000
+      idle-timeout: 600000
+      minimum-idle: 50
+
+############################# Token Service Config ###########################
+token:
+  check-token-endpoint-url: /oauth/check_token
+  client-id: test
+  client-secret: test
+
+############################# Flyway Config ###########################
+flyway:
+  base-line-on-migrate: true
+  table: flyway_version
+  base-line-version: 1
+  skip-default-resolvers: false
+  locations: classpath:db.migrations
+  is-enable-flyway-migration: true
+  out-of-order: false
+  repair: false
+
+ribbon:
+  ReadTimeout: 30000
+
+hystrix:
+  command:
+    default:
+      execution:
+        isolation:
+          strategy: THREAD
+          thread:
+            timeoutInMilliseconds: 20000
+
