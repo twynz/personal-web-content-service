@@ -4,6 +4,7 @@ import com.myweb.content.dao.ArticleDAO;
 import com.myweb.content.dto.ArticleDTO;
 import com.myweb.content.dto.ArticleListDTO;
 import com.myweb.content.entity.Article;
+import org.apache.ibatis.annotations.Param;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Description;
 import org.springframework.http.HttpStatus;
@@ -45,16 +46,12 @@ public class ArticleResource {
         return new ResponseEntity<>(HttpStatus.CREATED);
     }
 
-    @RequestMapping(value = "/article/list/{articleCategory}/{articleType}", method = RequestMethod.GET, produces = "application/json",
+    @RequestMapping(value = "/article/list/{articleType}", method = RequestMethod.GET, produces = "application/json",
             consumes = "application/json")
     @Description("get articles.")
-    public ResponseEntity<ArticleListDTO> getArticles(@PathVariable("articleCategory") String articleCategory,
+    public ResponseEntity<ArticleListDTO> getArticles(@Param("articleCategory") String articleCategory,
                                                     @PathVariable("articleType") String articleType) {
         ArticleListDTO articleListDTO = new ArticleListDTO();
-        if(articleType.equals("content")) {
-            List<Article> list = articleDAO.getArticleListContenyByCategory(articleCategory);
-            articleListDTO.setArticleList(list);
-        }
         if(articleType.equals("summary")){
             List<Article> list = articleDAO.getArticleListSummaryByCategory(articleCategory);
             articleListDTO.setArticleList(list);

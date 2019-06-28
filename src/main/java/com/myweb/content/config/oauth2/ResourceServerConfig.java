@@ -25,7 +25,7 @@ public class ResourceServerConfig extends ResourceServerConfigurerAdapter {
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 .and()
                 .requestMatchers().antMatchers("/**")
-                .and().authorizeRequests().antMatchers("/content/health","/article/list/**","/article/single/**").permitAll()
+                .and().authorizeRequests().antMatchers("/content/health","/api/article/list/**","/api/article/single/**").permitAll()
                 .anyRequest().authenticated();
         http.addFilterBefore(securityContextFilter(), AnonymousAuthenticationFilter.class);
     }
