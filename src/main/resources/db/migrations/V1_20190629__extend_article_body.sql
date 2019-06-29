@@ -1,0 +1,1 @@
+ALTER TABLE article MODIFY body MEDIUMTEXT;

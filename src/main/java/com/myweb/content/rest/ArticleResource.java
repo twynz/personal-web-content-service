@@ -48,7 +48,7 @@ public class ArticleResource {
 
     @RequestMapping(value = "/article/list/{articleType}", method = RequestMethod.GET, produces = "application/json",
             consumes = "application/json")
-    @Description("get articles.")
+    @Description("get articles summary.")
     public ResponseEntity<ArticleListDTO> getArticles(@Param("articleCategory") String articleCategory,
                                                     @PathVariable("articleType") String articleType) {
         ArticleListDTO articleListDTO = new ArticleListDTO();
@@ -62,16 +62,20 @@ public class ArticleResource {
     @RequestMapping(value = "/article/single", method = RequestMethod.GET, produces = "application/json",
             consumes = "application/json")
     @Description("get article by id.")
-    public ResponseEntity<ArticleDTO> getArticleByTypeAndId(@PathVariable("articleType") String articleType, @PathVariable("articleID") String articleID) {
+    //first get article name by summary id, then get use article name to query content
+    public ResponseEntity<ArticleDTO> getArticleByTypeAndId(@Param("articleType") String articleType, @Param("articleID") String articleID) throws Exception {
+        Article summary = articleDAO.getArticleSummaryByArticleId(articleID);
+        String name = summary.getArticleName();
         Article article = new Article();
         if (articleType.equals("content")) {
-            article = articleDAO.getArticleContentByArticleId(articleID);
+            article = articleDAO.getArticleContentByArticleName(name);
+            ArticleDTO articleDTO = buildArticleDTO(article);
+            return new ResponseEntity<>(articleDTO, HttpStatus.OK);
         }
-        if(articleType.equals("summary")) {
-            article = articleDAO.getArticleSummaryByArticleId(articleID);
+        else {
+            throw new Exception("only support content query");
         }
-        ArticleDTO articleDTO = buildArticleDTO(article);
-        return new ResponseEntity<>(articleDTO, HttpStatus.OK);
+
     }
 
     private ArticleDTO buildArticleDTO(Article article) {
